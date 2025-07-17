@@ -231,7 +231,7 @@ var memberDB = {
                             } else {
                                 if(result.affectedRows > 0) {
                                     var mailOptions = {
-                                        from: 'islandfurnituresep@gmail.com',
+                                        from: 'vibinsebastian07@gmail.com',
                                         to: email,
                                         subject: 'Island Furniture Member Account Activation',
                                         text: 'Greetings from Island Furniture... \n\n'
@@ -601,7 +601,7 @@ var generateRandomNumber = function(digits){
 var emailer = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'islandfurnituresep@gmail.com',
-        pass: 'islandFurniture123'
+        user: 'vibinsebastian07@gmail.com',
+        pass: 'gvzb zdkw jnwj mrwd'
     }
 });
