@@ -1,0 +1,228 @@
+<script src="../checkCountry.js"></script>
+<html>
+    <script src="../../header.js"></script>
+    <body>
+        <script>
+            // Get SKU from query parameter
+            var currentUrl = new URL(window.location.href);
+            var sku = currentUrl.searchParams.get("sku");
+            
+            document.addEventListener('DOMContentLoaded', function(){
+                // Load existing reviews
+                fetch(new Request('/api/getReviewsBySku?sku=' + encodeURIComponent(sku),
+                {
+                    method: 'GET'
+                })).then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    var htmlTxt = '';
+                    if(data.length > 0) {
+                        data.forEach(function(review) {
+                            htmlTxt += '\
+                                <tr>\
+                                    <td>' + review.rating + '/5</td>\
+                                    <td>' + review.comment + '</td>\
+                                    <td>' + new Date(review.createdAt).toLocaleDateString() + '</td>\
+                                    <td>' + (review.memberName || 'Anonymous') + '</td>\
+                                </tr>';
+                        });
+                    } else {
+                        htmlTxt += '<tr><td colspan="4" class="text-center">No reviews yet</td></tr>';
+                    }
+                    document.getElementById("reviewsTableBody").innerHTML = htmlTxt;
+                }).catch(function(error) {
+                    console.log(error);
+                });
+                
+                // Star rating functionality
+                const stars = document.querySelectorAll('.stars span');
+                const ratingSpan = document.getElementById('ratingValue');
+                const commentBox = document.getElementById('commentBox');
+                const wordCount = document.getElementById('wordCount');
+                const submitBtn = document.getElementById('submitBtn');
+                
+                let selectedRating = 0;
+                
+                stars.forEach(star => star.addEventListener('click', () => {
+                    selectedRating = +star.dataset.value;
+                    ratingSpan.textContent = selectedRating;
+                    stars.forEach(s => s.classList.toggle('selected', +s.dataset.value <= selectedRating));
+                }));
+                
+                commentBox.addEventListener('input', () => {
+                    let words = commentBox.value.trim().split(/\s+/).filter(Boolean);
+
+                    // Update word count
+                    wordCount.textContent = words.length;
+
+                    // Enforce 50-word limit only when exceeded
+                    if (words.length > 50) {
+                        // Prevent further input
+                        words = words.slice(0, 50);
+                        commentBox.value = words.join(' ') + ' ';
+                        wordCount.textContent = 50;
+                    }
+                });
+                
+                submitBtn.addEventListener('click', function() {
+                    const comment = commentBox.value.trim();
+                    if (!selectedRating) return alert('Please select a rating');
+                    if (!comment) return alert('Please enter a comment');
+                    
+                    var memberEmail = sessionStorage.getItem('memberEmail');
+                    if(!memberEmail) {
+                        alert('Please login to submit a review');
+                        return;
+                    }
+                    
+                    fetch(new Request('/api/addReview', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            sku: sku,
+                            rating: selectedRating,
+                            comment: comment,
+                            memberEmail: memberEmail
+                        })
+                    })).then(function(response) {
+                        return response.json();
+                    }).then(function(data) {
+                        if(data.success) {
+                            // Reload reviews
+                            window.location.reload();
+                        } else {
+                            alert('Failed to submit review');
+                        }
+                    }).catch(function(error) {
+                        console.log(error);
+                        alert('Failed to submit review');
+                    });
+                });
+            }, false);
+        </script>
+        
+        <div class="body">
+            <script src="menu2.js"></script>
+            <div class="body">
+                <div role="main" class="main">
+                    <section class="page-top">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2>Product Reviews</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <div class="container">
+                        <script src="/displayMessageLong.js"></script>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <h3 class="shorter"><strong>Leave Your Review</strong></h3>
+                                        
+                                        <div class="form-group">
+                                            <label>Rating:</label>
+                                            <div class="stars mb-2">
+                                                <span data-value="1">★</span>
+                                                <span data-value="2">★</span>
+                                                <span data-value="3">★</span>
+                                                <span data-value="4">★</span>
+                                                <span data-value="5">★</span>
+                                            </div>
+                                            <p>Your rating: <strong><span id="ratingValue">0</span>/5</strong></p>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="commentBox">Review:</label>
+                                            <textarea id="commentBox" class="form-control" rows="4" placeholder="Write your review here (max 50 words)..."></textarea>
+                                            <p class="help-block"><span id="wordCount">0</span>/50 words</p>
+                                        </div>
+                                        
+                                        <button id="submitBtn" class="btn btn-primary">Submit Review</button>
+                                    </div>
+                                </div>
+                                
+                                <hr class="tall">
+                                
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">Customer Reviews</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th width="15%">Rating</th>
+                                                    <th width="45%">Comment</th>
+                                                    <th width="20%">Date</th>
+                                                    <th width="20%">Reviewer</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="reviewsTableBody"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script src="../footer.js"></script>
+        </div>
+        
+        <style>
+            /* Match furniture page styles */
+            .stars span {
+                font-size: 24px;
+                cursor: pointer;
+                color: #ccc;
+                transition: color 0.2s;
+            }
+            .stars span.selected {
+                color: #ffc107;
+            }
+            .stars span:hover {
+                color: #ffc107;
+            }
+            .panel {
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+                margin-bottom: 20px;
+            }
+            .panel-default > .panel-heading {
+                background-color: #f5f5f5;
+                border-color: #ddd;
+                color: #333;
+            }
+            .panel-title {
+                font-size: 16px;
+                margin-top: 0;
+            }
+            .table {
+                width: 100%;
+                max-width: 100%;
+                margin-bottom: 20px;
+            }
+            .table > thead > tr > th {
+                vertical-align: bottom;
+                border-bottom: 2px solid #ddd;
+            }
+            .table > tbody > tr > td {
+                padding: 8px;
+                line-height: 1.42857143;
+                vertical-align: top;
+                border-top: 1px solid #ddd;
+            }
+            .help-block {
+                color: #737373;
+                font-size: 12px;
+            }
+        </style>
+    </body>
+</html>
