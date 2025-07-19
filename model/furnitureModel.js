@@ -382,6 +382,89 @@ var furnitureDB = {
                 }
             });
         });
+    },
+    addFavourite: function (memberId, furnitureId) {
+    return new Promise((resolve, reject) => {
+        var conn = db.getConnection();
+        conn.connect(function (err) {
+            if (err) {
+                console.log(err);
+                conn.end();
+                return reject(err);
+            } else {
+                var sql = "INSERT INTO memberfavourites (member_id, furniture_id) VALUES (?, ?)";
+                conn.query(sql, [memberId, furnitureId], function (err, result) {
+                    conn.end();
+                    if (err) {
+                        return reject(err);
+                    } else {
+                        return resolve(true);
+                    }
+                });
+                }
+            });
+        });
+    },
+removeFavourite: function (memberId, furnitureId) {
+    return new Promise((resolve, reject) => {
+        const conn = db.getConnection();
+        conn.connect(err => {
+            if (err) {
+                conn.end();
+                return reject(err);
+            }
+            const sql = "DELETE FROM memberfavourites WHERE member_id = ? AND furniture_id = ?";
+            conn.query(sql, [memberId, furnitureId], (err, result) => {
+                conn.end();
+                if (err) return reject(err);
+                return resolve(true);
+            });
+        });
+    });
+},
+
+    getFavourites : function(memberId){
+        return new Promise((resolve, reject) => {
+        var conn = db.getConnection();
+        conn.connect(function (err) {
+            if (err) {
+                console.log(err);
+                conn.end();
+                return reject(err);
+            } else {
+                var sql = `SELECT 
+                                    i.ID AS id,
+                                    i.NAME AS name,
+                                    f.IMAGEURL AS imageURL,
+                                    i.SKU AS sku,
+                                    i.DESCRIPTION AS description,
+                                    i.TYPE AS type,
+                                    i._LENGTH AS length,
+                                    i.WIDTH AS width,
+                                    i.HEIGHT AS height,
+                                    i.CATEGORY AS category
+                                FROM 
+                                    itementity i
+                                JOIN 
+                                    furnitureentity f ON i.ID = f.ID
+                                JOIN 
+                                    memberfavourites mf ON mf.furniture_id = i.ID
+                                WHERE 
+                                    i.ISDELETED = FALSE
+                                    AND mf.member_id = ?`;
+                conn.query(sql, [memberId], function (err, result) {
+                    conn.end();
+                    if (err) {
+                        return reject(err);
+                    } else {
+                        return resolve(result);
+                    }
+                });
+                }
+            });
+        });
     }
+
+
 };
 module.exports = furnitureDB

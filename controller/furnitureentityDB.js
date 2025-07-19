@@ -117,4 +117,26 @@ app.post('/api/updateFurniture', upload.single('imgfile'), function (req, res) {
         });
 });
 
+app.post('/api/addFavourite', jsonParser, function(req, res) {
+    const memberId = req.body.memberId;
+    const furnitureId = req.body.furnitureId;
+    furniture.addFavourite(memberId, furnitureId)
+        .then(() => res.status(200).send({ success: true }))
+        .catch(err => res.status(500).send({ success: false, message: err.message }));
+    });
+
+app.post('/api/removeFavourite', jsonParser, function(req, res) {
+    const { memberId, furnitureId } = req.body;
+    furniture.removeFavourite(memberId, furnitureId)
+        .then(() => res.status(200).send({ success: true }))
+        .catch(err => res.status(500).send({ success: false, message: err.message }));
+});
+
+app.post('/api/getFavourites', jsonParser, function(req, res){
+    const memberId = req.body.memberId;
+    furniture.getFavourites(memberId)
+    .then(favourites => res.status(200).send({ success: true, favourites }))
+    .catch(err => res.status(500).send({ success: false, message: err.message }));
+})
+    
 module.exports = app;

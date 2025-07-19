@@ -68,6 +68,9 @@ document.write('\
                         <a href="/B/' + countryPrefix + '/memberProfile.html"><i class="icon icon-user"></i>Profile</a>\
                     </li>\
                     <li>\
+                        <a href="/B/' + countryPrefix + '/favourites.html"><i class="icon icon-heart"></i>Favourites</a>\
+                    </li>\
+                    <li>\
                         <a href="/B/' + countryPrefix + '/contactUs.html"><i class="icon icon-shopping-cart"></i>Contact Us</a>\
                     </li>\
                     <li>\
@@ -89,7 +92,7 @@ document.write('\
                     </li>\
                     <li class="dropdown">\
                         <a class="dropdown-toggle" href="#">\
-                            Furniture<i class="icon icon-angle-down"></i>\
+                            Furnitures<i class="icon icon-angle-down"></i>\
                         </a>\
                         <ul class="dropdown-menu">\
                             <li><a id="tableDeskLink"><i class="icon icon-map-marker"></i> Tables & Desk</a></li>\
@@ -101,9 +104,7 @@ document.write('\
                             <li><a href="/B/' + countryPrefix + '/furnitureCategory.html?cat=Study"><i class="icon icon-map-marker"></i> Study</a></li>\
                             <li><a href="/B/' + countryPrefix + '/furnitureCategory.html?cat=Children"><i class="icon icon-map-marker"></i> Children</a></li>\
                         </ul>\
-                    </li>\
-                    <li>\
-                        <a id="retailProductLink"><i class="icon icon-coffee"></i> Retail Products</a>\
+                        <li><a id="retailProductLink"><i class="icon icon-coffee"></i> Retail Products</a></li>\
                     </li>\
                 </ul>\
             </nav>\
