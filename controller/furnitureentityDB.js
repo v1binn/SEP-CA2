@@ -118,3 +118,4 @@ app.post('/api/updateFurniture', upload.single('imgfile'), function (req, res) {
 });
 
 module.exports = app;
+//test
