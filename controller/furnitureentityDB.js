@@ -117,7 +117,6 @@ app.post('/api/updateFurniture', upload.single('imgfile'), function (req, res) {
         });
 });
 
-<<<<<<< HEAD
 app.post('/api/addFavourite', jsonParser, function(req, res) {
     const memberId = req.body.memberId;
     const furnitureId = req.body.furnitureId;
@@ -141,7 +140,3 @@ app.post('/api/getFavourites', jsonParser, function(req, res){
 })
     
 module.exports = app;
-=======
-module.exports = app;
-//test
->>>>>>> 70ef4fbdcda5e19e17453273b2b94abd47435613
