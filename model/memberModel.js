@@ -602,6 +602,6 @@ var emailer = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'vibinsebastian07@gmail.com',
-        pass: 'gvzb zdkw jnwj mrwd'
+        pass: 'cpiu bwfh amya ctkx'
     }
 });
