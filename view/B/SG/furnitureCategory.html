@@ -37,8 +37,8 @@
                 .then(response => response.json())
                 .then(data => {
                     let htmlTxt = '';
-                    const furniture = data[0]; // Update if you want to show more than one item
 
+                data.forEach(furniture => {
                     const isFavourited = favouriteIds.has(furniture.id);
                     const heartClass = isFavourited ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
                     const heartColor = isFavourited ? 'red' : 'black';
@@ -83,7 +83,7 @@
 
 
                     htmlTxt += '</span></span></li>';
-
+                    });
                     document.getElementById("furnituresDisplay").innerHTML = htmlTxt;
                     document.getElementById("categoryTitle").innerHTML = cat;
                 });

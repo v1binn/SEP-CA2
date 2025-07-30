@@ -54,13 +54,16 @@
                         document.getElementById("salesHistoryTab").innerHTML = '<h5 class="center">You do not have any sales history.</h5>';
                     }
                     else {
+                        console.log(boughtItem)
+
                         var htmlTxt = '';
                         var orderIdList = [];
                         var overallPrice = 0;
                         var finalPrice = 0;
-                        //get all order IDs
-                        for (i = 0; i < boughtItem.length; i++) {
-                            orderIdList[i] = boughtItem[i].id;
+
+                        // Gather all unique order IDs
+                        for (let i = 0; i < boughtItem.length; i++) {
+                        orderIdList.push(boughtItem[i].id);
                         }
                         //unduplicate order IDs
                         orderIdList = [...new Set(orderIdList)];
