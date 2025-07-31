@@ -30,7 +30,7 @@
         var member = null;
         document.addEventListener('DOMContentLoaded', function () {
             member = JSON.parse(sessionStorage.getItem("member"));
-            // populateMemberForm();
+            populateMemberForm();
             document.getElementById("profileForm").addEventListener("submit", function (e) {
                 e.preventDefault(); // prevents the default form reload
                 submitMemberForm(); // calls your async function properly
@@ -199,6 +199,27 @@
             return startDate.toLocaleDateString("en-US", options);
         }
 
+        function populateMemberForm() {
+            const memberData = JSON.parse(sessionStorage.getItem('member'));
+
+            if (!memberData) return;
+
+            document.getElementById("name").value = memberData.name || "";
+            document.getElementById("email").value = memberData.email || "";
+            document.getElementById("phone").value = memberData.phone || "";
+            document.getElementById("country").value = memberData.country || "";
+            document.getElementById("address").value = memberData.address || "";
+            document.getElementById("securityQuestion").value = memberData.securityQuestion || "";
+            document.getElementById("securityAnswer").value = memberData.securityAnswer || "";
+            document.getElementById("age").value = memberData.age || "";
+            document.getElementById("income").value = memberData.income || "";
+
+            if (memberData.sla == 1) {
+                document.getElementById("serviceLevelAgreement").checked = true;
+            } else {
+                document.getElementById("serviceLevelAgreement").checked = false;
+            }
+        }
 
         async function submitMemberForm() {
             var oldPassword = document.getElementById('oldPassword').value.trim();
@@ -291,8 +312,7 @@
         sessionStorage.setItem("memberEmail", member.email);
         sessionStorage.setItem("memberName", member.name);
 
-        // If you want to update the UI: populateMemberForm();
-        // But since you don’t want it to reflect immediately, keep it commented.
+        populateMemberForm();
 
         console.log("📧 email from session:", member.email);
         document.getElementById("email").value = member.email;

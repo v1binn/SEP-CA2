@@ -102,7 +102,7 @@ var memberDB = {
               return reject(err);
             } else {
               var member = new Member();
-              member.id = result[0].id;
+              member.id = result[0].ID;
               member.dob = result[0].DOB;
               member.accountActivationStatus =
                 result[0].ACCOUNTACTIVATIONSTATUS;
@@ -342,6 +342,8 @@ updateMember: function (details) {
         var sla = details.sla ?? 1;
         var password = details.password;
 
+        console.log("➡️ Starting updateMember for:", email);
+
         if (password == null || password === "") {
           // No password change
           var sql = `
@@ -351,13 +353,16 @@ updateMember: function (details) {
           `;
           var sqlArgs = [name, phone, country, address, securityQuestion, securityAnswer, age, income, sla, email];
 
+          console.log("Running SQL without password:", sql);
+          console.log("Parameters:", sqlArgs);
+
           conn.query(sql, sqlArgs, function (err, result) {
             conn.end();
             if (err) {
-              console.error("❌ SQL Error:", err);
+              console.error("SQL Error:", err);
               return reject(err);
             } else {
-              console.log(result);
+              console.log("Update result:", result);
               return resolve({ success: result.affectedRows > 0 });
             }
           });
@@ -367,7 +372,7 @@ updateMember: function (details) {
           bcrypt.hash(password, 5, function (err, hash) {
             if (err) {
               conn.end();
-              console.error("❌ Bcrypt hashing error:", err);
+              console.error("Bcrypt hashing error:", err);
               return reject(err);
             }
 
@@ -378,16 +383,16 @@ updateMember: function (details) {
             `;
             var sqlArgs = [name, phone, country, address, securityQuestion, securityAnswer, age, income, sla, hash, email];
 
-            console.log(sql);
-            console.log(sqlArgs);
+            console.log("Running SQL with password:", sql);
+            console.log("Parameters:", sqlArgs);
 
             conn.query(sql, sqlArgs, function (err, result) {
               conn.end();
               if (err) {
-                console.error(err);
+                console.error("SQL Error:", err);
                 return reject(err);
               } else {
-                console.log(result);
+                console.log("Update result:", result);
                 return resolve({ success: result.affectedRows > 0 });
               }
             });
@@ -551,19 +556,19 @@ updateMember: function (details) {
       var conn = db.getConnection();
       conn.connect(function (err) {
         if (err) {
-          console.log(err);
+          console.log("DB Connection Error:",err);
           conn.end();
           return reject(err);
         } else {
           var sql = "SELECT * FROM memberentity m WHERE m.ID=?";
           conn.query(sql, [id], (err, result) => {
             if (err) {
-              console.log(err);  
+              console.log("SQL Error:", err);  
               conn.end();
               return reject(err);
             } else {
               if (result == null || result == undefined || result == "") {
-                console.log(id);
+                console.log("No member found with ID:", id);
                 conn.end();
                 return resolve({ success: false });
               }
@@ -571,9 +576,9 @@ updateMember: function (details) {
               member.email = result[0].EMAIL;
               member.passwordHash = result[0].PASSWORDHASH;
 
-            console.log(id);
-console.log(password);
-console.log(result[0].PASSWORDHASH);
+            console.log("Checking password for ID:", id);
+console.log("User input password:", password);
+console.log("Stored hash from DB:", result[0].PASSWORDHASH);
 
 
               bcrypt.compare(
@@ -664,9 +669,9 @@ var generateRandomNumber = function (digits) {
 };
 
 var emailer = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'vibinsebastian07@gmail.com',
-        pass: 'cpiu bwfh amya ctkx'
-    }
+  service: "gmail",
+  auth: {
+    user: "vibinsebastian07@gmail.com",
+    pass: "cpiu bwfh amya ctkx",
+  },
 });

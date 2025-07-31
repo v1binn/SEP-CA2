@@ -50,13 +50,13 @@
                                             {
                                                 method: 'GET'
                                             })).then(function (response) {
-                                                console.log(response.status);
+                                                console.log("🔍 Response status from getMember:", response.status);
                                                 if (!response.ok) {
-                                                    throw new Error(response.status);
+                                                    throw new Error("Failed to fetch member. Status: " + response.status);
                                                 }
                                                 return response.json();
                                             }).then(function (member) {
-                                                console.log(member);
+                                                console.log("✔ Member object received:", member);
                                                 const parsedMember = typeof member === "string" ? JSON.parse(member) : member;
 
                                                 sessionStorage.setItem('memberId', parsedMember.id);
@@ -67,7 +67,7 @@
                                                 window.location.href = "/B/" + countryPrefix + "/memberProfile.html";
                                             })
                                             .catch(function (error) {
-                                                console.error(error);
+                                                console.error("Error during getMember fetch:", error);
                                             });
                                     }
                                     //if account is not authenticated
