@@ -65,27 +65,21 @@
                         for (let i = 0; i < boughtItem.length; i++) {
                         orderIdList.push(boughtItem[i].id);
                         }
+
                         //unduplicate order IDs
                         orderIdList = [...new Set(orderIdList)];
-                        var temp;
-                        var size = orderIdList.length;
-                        //sort order ID in ascending order
-                        for (i = 0; i < size - 1; i++) {
-                            for (j = 0; j < size - i - 1; j++) {
-                                if (orderIdList[j] > orderIdList[j + 1]) {
-                                    temp = orderIdList[j];
-                                    orderIdList[j] = orderIdList[j + 1];
-                                    orderIdList[j + 1] = temp;
-                                }
-                            }
-                        }
 
-                        htmlTxt += '<h5>Order #' + (1) + '</h5>';
-                        var counter = 0;
-                        //get bought items by order ID
-                        for (j = 0; j < boughtItem.length; j++) {
+                        // Sort order IDs
+                        orderIdList.sort((a, b) => a - b);
 
-                            if (boughtItem[j].id == orderIdList[0]) {
+                        // Loop over each unique order
+                        for (let x = 0; x < orderIdList.length; x++) {
+                            htmlTxt += '<h5>Order #' + (x + 1) + '</h5>';
+                            var counter = 0;
+                            //get bought items by order ID
+                            for (j = 0; j < boughtItem.length; j++) {
+
+                            if (boughtItem[j].id == orderIdList[x]) {
                                 var item = boughtItem[j];
                                 //display top level info
                                 if (counter == 0) {
@@ -128,7 +122,7 @@
                                                             <tbody>';
                         for (y = 0; y < boughtItem.length; y++) {
 
-                            if (boughtItem[y].id == orderIdList[0]) {
+                            if (boughtItem[y].id == orderIdList[x]) {
                                 var product = boughtItem[y];
                                 htmlTxt += '\
                                         <tr class="cart_table_item">\
@@ -171,7 +165,7 @@
                                     </div>\
                                 </div>';
                         finalPrice = 0;
-
+                    }
                         htmlTxt += '<h4 style="font-weight: bold; padding-left: 20px">Total Amount Spent: $' + overallPrice + '</h4>';
                         document.getElementById("salesHistoryTab").innerHTML = htmlTxt;
                     }
